@@ -1,13 +1,10 @@
 ---
 # tasks file for mysql_role
 
-- name: set mysql_server_id based on ip address
-  set_fact: 
-    mysql_server_id: "{{ ansible_default_ipv4.address|regex_replace("^.{0,3}|[.]") }}"
-  when: "{{ mysql_server_id }}" is not defined
 
 - name: Include OS specific variables
   include_vars: "{{ ansible_os_family }}.yml"
+  ignore_errors: True
 
 - name: Include Debian specific tasks
   include: Debian.yml
@@ -17,18 +14,13 @@
   include: RedHat.yml
   when: ansible_os_family == 'RedHat'
 
-
 - name: Check for Un-Supported Operating System
   fail:
     msg: "Operating System of the target machine ({{ inventory_hostname }}) is currently not supported"
   when: mysql_supported_os is not defined
-
-- name: ensure mysql is started
-  service: 
-    name: "{{ mysql_service_name }}"
-  state: 
-    started enabled: yes
+  ignore_errors: True
 
 - name: setup replication if set
   include: replication.yml
   when: mysql_replication
+  ignore_errors: True

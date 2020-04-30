@@ -36,15 +36,15 @@
   notify: restart mysql
   ignore_errors: True
 
-- name: Replication Setup | Debian
-  template:
+- name: setup replication options | Debian
+  template: 
     src: Debian-replication.cnf.j2 
-    dest: "/etc/mysql/conf.d/replication.cnf"
+    dest: /etc/mysql/conf.d/replication.cnf 
     owner: root 
     group: root 
-    mode: '644'
-    register: mysql_debian_config
-    when: "{{ mysql_replication }}"
+    mode: 644
+  register: mysql_debian_conf
+  when: mysql_replication
   notify: restart mysql
   ignore_errors: True
 
@@ -52,4 +52,5 @@
   service: 
     name: "{{ mysql_service_name }}"
     state: restarted
+  ignore_errors: True
   

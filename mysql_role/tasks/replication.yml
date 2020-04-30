@@ -1,25 +1,15 @@
 ---
-- name: check for the mysql_replication_password variable
+- name: Check for the mysql_replication_password variable
   fail: 
     msg: mysql_replication_password has not been defined
   when: mysql_replication_password is not defined
 
-- name: check for the mysql_master_host variable
+- name: Check for the mysql_master_host variable
   fail: 
     msg: mysql_master_host has not been defined
   when: mysql_master_host is not defined
 
-- name: set slave role based on group
-  set_fact: 
-  mysql_replication_role: slave
-  when: "'mysql_slaves' in group_names"
-
-- name: set master role based on group
-  set_fact: 
-  mysql_replication_role: master
-  when: "'mysql_masters' in group_names"
-
-- name: setup replication user
+- name: Setup replication user
   mysql_user:
     name: "{{ mysql_replication_user }}"
     password: "{{ mysql_replication_password }}"
