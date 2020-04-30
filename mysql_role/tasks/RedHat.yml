@@ -1,0 +1,53 @@
+---
+- name: Check MySQL Status | RedHat
+  package_facts:
+    manager: "auto"
+
+- name: MySQL Status Result | RedHat 
+  debug: 
+    msg: "MySQL FOUND"
+  when: "'mysql-server' in ansible_facts.packages"  
+
+- name: MySQL Status Result | RedHat 
+  debug: 
+    msg: "MySQL NOT-FOUND"
+  when: "'mysql-server' not in ansible_facts.packages"   
+
+- name: Update apt cache if MySQL is not installed | RedHat
+  yum:
+    update_cache: yes
+  when: "'mysql-server' not in ansible_facts.packages"
+
+- name: Install Package | RedHat
+  yum: 
+    pkg: mysql-server
+    state: present
+  register: mysql_install
+
+- name: Configure Service |RedHat
+  template: 
+    src: RedHat-my.cnf.j2 
+    dest: "/etc/mysql/my.cnf" 
+    owner: root 
+    group: root 
+    mode: '644'
+  notify: restart mysql
+  ignore_errors: True
+
+- name: Replication Setup | RedHat
+  template:
+    src: RedHat-replication.cnf.j2 
+    dest: "/etc/mysql/conf.d/replication.cnf"
+    owner: root 
+    group: root 
+    mode: '644'
+    register: mysql_RedHat_config
+    when: mysql_replication
+  notify: restart mysql
+  ignore_errors: True
+
+- name: Re-Start MySQL if Replication | RedHat
+  service: 
+    name: mysql-server
+    state: restarted
+  when: mysql_RedHat_config|changed

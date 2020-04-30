@@ -1,0 +1,11 @@
+---
+# defaults file for mysql_role
+
+mysql_port: 3306
+
+mysql_replication: False
+mysql_configure_slave: False
+mysql_replication_user: replicant
+mysql_log_bin: "/var/lib/mysql/binary-log"
+mysql_relay_log: "/var/lib/mysql/relay-log"
+mysql_relay_log_space_limit: "4G"

@@ -1,0 +1,5 @@
+---
+- hosts: Master,Slave
+  become: yes
+  roles:
+    - mysql_role

@@ -1,0 +1,7 @@
+---
+# vars file for mysql_role
+
+mysql_service_name: "mysql"
+mysql_packages:
+  - python-mysqldb
+  - mysql-server
