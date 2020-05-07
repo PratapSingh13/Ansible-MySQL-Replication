@@ -1,4 +1,10 @@
 ---
+- name: >
+    Debian | set_fact
+      mysql_supported_os: True
+  set_fact:
+    mysql_supported_os: True
+
 - name: Check MySQL Status | Debian
   package_facts:
     manager: "auto"
@@ -13,11 +19,6 @@
     msg: "MySQL NOT-FOUND"
   when: "'mysql-server' not in ansible_facts.packages"   
 
-- name: Update apt cache if MySQL is not installed | Debian
-  apt:
-    update_cache: yes
-  when: "'mysql-server' not in ansible_facts.packages"
-  ignore_errors: True
 
 - name: Install Packages | Debian
   apt: 
@@ -36,7 +37,17 @@
   notify: restart mysql
   ignore_errors: True
 
-- name: setup replication options | Debian
+- name: Configure Service | Debian
+  template: 
+    src: Debian-mysqld.cnf.j2 
+    dest: "/etc/mysql/my.cnf" 
+    owner: root 
+    group: root 
+    mode: '644'
+  when: inventory_hostname in groups['Slave']
+  notify: restart mysql
+
+- name: Debian | setup replication options
   template: 
     src: Debian-replication.cnf.j2 
     dest: /etc/mysql/conf.d/replication.cnf 
@@ -46,11 +57,10 @@
   register: mysql_debian_conf
   when: mysql_replication
   notify: restart mysql
-  ignore_errors: True
 
 - name: Re-Start MySQL if Replication | Debian
   service: 
     name: "{{ mysql_service_name }}"
     state: restarted
-  ignore_errors: True
+  when: mysql_debian_conf | changed
   

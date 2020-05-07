@@ -32,22 +32,10 @@
     group: root 
     mode: '644'
   notify: restart mysql
-  ignore_errors: True
-
-- name: Replication Setup | RedHat
-  template:
-    src: RedHat-replication.cnf.j2 
-    dest: "/etc/mysql/conf.d/replication.cnf"
-    owner: root 
-    group: root 
-    mode: '644'
-    register: mysql_RedHat_config
-    when: mysql_replication
-  notify: restart mysql
-  ignore_errors: True
 
 - name: Re-Start MySQL if Replication | RedHat
   service: 
     name: mysql-server
     state: restarted
   when: mysql_RedHat_config|changed
+  ignore_errors: True

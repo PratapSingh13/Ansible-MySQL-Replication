@@ -1,7 +1,7 @@
 galaxy_info:
-  author: your name
-  description: your role description
-  company: your company (optional)
+  author: Yogendra Pratap Singh
+  description: A Ansible Role for Master-Slave Replication using MySQL
+  company: OpsTree
 
   # If the issue tracker for your role is not on github, uncomment the
   # next line and provide a value
@@ -28,7 +28,7 @@ galaxy_info:
   # https://galaxy.ansible.com/api/v1/platforms/
   #
   # platforms:
-  # - name: Fedora
+  # - name: Debian
   #   versions:
   #   - all
   #   - 25

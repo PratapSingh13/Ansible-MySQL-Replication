@@ -8,12 +8,13 @@
 [mysqld]
 {% if mysql_replication and mysql_replication_role == "master" %}
 log-bin={{ mysql_log_bin }}
-server-id={{ mysql_server_id }}
+#server-id={{ mysql_server_id }}
 {% endif %}
 
 {% if mysql_replication and mysql_replication_role == "slave" %}
 relay-log={{ mysql_relay_log }}
 relay-log-space-limit={{ mysql_relay_log_space_limit }}
 read-only=1
-server-id={{ mysql_server_id }}
+#server-id={{ mysql_server_id }}
 {% endif %}
+
